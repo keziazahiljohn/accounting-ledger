@@ -140,7 +140,21 @@ public class FinancialTracker {
      */
 
     private static void addPayment(Scanner scanner) {
-        // TODO
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        System.out.println("Description of transaction:");
+        String description = scanner.nextLine();
+
+        System.out.println("Enter the Vendor: ");
+        String vendor = scanner.nextLine();
+
+        System.out.println("Enter Amount:");
+        double amount = scanner.nextDouble() * -1;
+
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
+
+        transactions.add(transaction);
     }
 
     /* ------------------------------------------------------------------
