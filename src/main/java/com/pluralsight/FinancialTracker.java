@@ -1,6 +1,9 @@
 package com.pluralsight;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +43,31 @@ public class FinancialTracker {
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
+
+        System.out.println(transactions);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("transactions.csv"));
+            String line;
+            ArrayList<Transaction> transactions = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("\\|");
+                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
+                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
+                String description = tokens[2];
+                String vendor = tokens[3];
+                double amount = Double.parseDouble(tokens[4]);
+
+                Transaction existing = new Transaction(date, time, description, vendor, amount);
+
+                transactions.add(existing);
+            }
+            reader.close();
+        } catch (Exception e) {
+            System.out.println("File not found");
+        }
+
 
         while (running) {
             System.out.println("Welcome to TransactionApp");
@@ -101,6 +129,8 @@ public class FinancialTracker {
         double amount = scanner.nextDouble();
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
+
+        transactions.add(transaction);
     }
 
     /**
