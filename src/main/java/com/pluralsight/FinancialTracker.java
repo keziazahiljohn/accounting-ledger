@@ -197,9 +197,47 @@ public class FinancialTracker {
         }
     }
 
-    private static void displayDeposits() { /* TODO – only amount > 0               */ }
+    private static void displayDeposits() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("\\|");
+                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
+                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
+                String description = tokens[2];
+                String vendor = tokens[3];
+                double amount = Double.parseDouble(tokens[4]);
+                if (amount > 0) {
+                    System.out.println(line);
+                }
+            }
 
-    private static void displayPayments() { /* TODO – only amount < 0               */ }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void displayPayments() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("\\|");
+                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
+                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
+                String description = tokens[2];
+                String vendor = tokens[3];
+                double amount = Double.parseDouble(tokens[4]);
+                if (amount < 0) {
+                    System.out.println(line);
+                }
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /* ------------------------------------------------------------------
        Reports menu
