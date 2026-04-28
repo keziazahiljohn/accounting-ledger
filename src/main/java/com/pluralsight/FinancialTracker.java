@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 /*
@@ -87,7 +88,19 @@ public class FinancialTracker {
      * Store the amount as-is (positive) and append to the file.
      */
     private static void addDeposit(Scanner scanner) {
-        // TODO
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        System.out.println("Description of transaction:");
+        String description = scanner.nextLine();
+
+        System.out.println("Enter the Vendor: ");
+        String vendor = scanner.nextLine();
+
+        System.out.println("Enter Amount:");
+        double amount = scanner.nextDouble();
+
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
     }
 
     /**
@@ -95,6 +108,7 @@ public class FinancialTracker {
      * Amount must be entered as a positive number,
      * then converted to a negative amount before storing.
      */
+
     private static void addPayment(Scanner scanner) {
         // TODO
     }
