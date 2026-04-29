@@ -219,6 +219,9 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             LocalDate today = LocalDate.now();
+            LocalDate firstDayOfMonth = today.withDayOfMonth(1);
+            LocalDate firstOfTheYear = LocalDate.ofYearDay(LocalDate.now().getYear(), 1);
+
             switch (input) {
                 case "1" -> {
                     System.out.println("Month to Date Report:");
@@ -229,13 +232,21 @@ public class FinancialTracker {
                 case "2" -> {
                     System.out.println("Previous Month Report");
 
-                    LocalDate firstDayOfMonth = today.withDayOfMonth(1);
                     LocalDate firstPreviousMonth = firstDayOfMonth.minusMonths(1);
                     LocalDate lastPreviousMonth = firstDayOfMonth.minusDays(1);
                     filterTransactionsByDate(firstPreviousMonth, lastPreviousMonth);
                 }
-                case "3" -> {/* TODO – year-to-date report   */ }
-                case "4" -> {/* TODO – previous year report  */ }
+                case "3" -> {
+                    System.out.println("Year to Date Report:");
+
+                    filterTransactionsByDate(firstOfTheYear, today);
+                }
+                case "4" -> {
+                    LocalDate firstOfPreviousYear = firstOfTheYear.minusYears(1);
+                    LocalDate lastOfLastYear = firstOfTheYear.minusDays(1);
+
+                    filterTransactionsByDate(firstOfPreviousYear, lastOfLastYear);
+                }
                 case "5" -> {
                     System.out.println("Search Vendor:");
                     String vendor = scanner.nextLine();
