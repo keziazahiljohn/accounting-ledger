@@ -179,60 +179,24 @@ public class FinancialTracker {
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
     private static void displayLedger() {
-//        try {
-//            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
         for (Transaction transaction : transactions) {
             System.out.println(transaction);
         }
     }
 
     private static void displayDeposits() {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split("\\|");
-                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
-                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
-                String description = tokens[2];
-                String vendor = tokens[3];
-                double amount = Double.parseDouble(tokens[4]);
-                if (amount > 0) {
-                    System.out.println(line);
-                }
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() > 0) {
+                System.out.println(transaction);
             }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     private static void displayPayments() {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split("\\|");
-                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
-                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
-                String description = tokens[2];
-                String vendor = tokens[3];
-                double amount = Double.parseDouble(tokens[4]);
-                if (amount < 0) {
-                    System.out.println(line);
-                }
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() < 0) {
+                System.out.println(transaction);
             }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -256,21 +220,11 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1" -> {
-                    System.out.println("Month to Date report:");
-                    LocalDate current = LocalDate.now();
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
-                        String line;
+                    System.out.println("Month to Date Report:");
 
-                        while ((line = reader.readLine()) != null) {
-                            String[] tokens = line.split("-");
-                            int year = Integer.parseInt(tokens[0]);
-                            int month = Integer.parseInt(tokens[1]);
-                            int day = Integer.parseInt(tokens[2]);
-                        }
-                    } catch (Exception e) {
-                        System.out.println("File not found XoX");
-                    }
+                    LocalDate today = LocalDate.now();
+                    LocalDate startofMonth = today.withDayOfMonth(1);
+                    filterTransactionsByDate(startofMonth, today);
                 }
                 case "2" -> {/* TODO – previous month report */ }
                 case "3" -> {/* TODO – year-to-date report   */ }
@@ -287,7 +241,11 @@ public class FinancialTracker {
        Reporting helpers
        ------------------------------------------------------------------ */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-        // TODO – iterate transactions, print those within the range
+        for (Transaction transaction : transactions) {
+            if (!transaction.getDate().isBefore(start) && !transaction.getDate().isAfter(end)) {
+                System.out.println(transaction);
+            }
+        }
     }
 
     private static void filterTransactionsByVendor(String vendor) {
