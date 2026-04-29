@@ -41,29 +41,6 @@ public class FinancialTracker {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
-        System.out.println(transactions);
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
-            String line;
-            ArrayList<Transaction> transactions = new ArrayList<>();
-
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split("\\|");
-                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
-                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
-                String description = tokens[2];
-                String vendor = tokens[3];
-                double amount = Double.parseDouble(tokens[4]);
-
-                Transaction existing = new Transaction(date, time, description, vendor, amount);
-
-                transactions.add(existing);
-            }
-            reader.close();
-        } catch (Exception e) {
-            System.out.println("File not found");
-        }
 
 
         while (running) {
@@ -97,9 +74,26 @@ public class FinancialTracker {
      * • Each line looks like: date|time|description|vendor|amount
      */
     public static void loadTransactions(String fileName) {
-        // TODO: create file if it does not exist, then read each line,
-        //       parse the five fields, build a Transaction object,
-        //       and add it to the transactions list.
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("\\|");
+                LocalDate date = LocalDate.parse(tokens[0], DATE_FMT);
+                LocalTime time = LocalTime.parse(tokens[1], TIME_FMT);
+                String description = tokens[2];
+                String vendor = tokens[3];
+                double amount = Double.parseDouble(tokens[4]);
+
+                Transaction transaction = new Transaction(date, time, description, vendor, amount);
+
+                transactions.add(transaction);
+            }
+            reader.close();
+        } catch (Exception e) {
+            System.out.println("File not found");
+        }
     }
 
     /* ------------------------------------------------------------------
@@ -123,7 +117,7 @@ public class FinancialTracker {
         String vendor = scanner.nextLine();
 
         System.out.println("Enter Amount:");
-        double amount = scanner.nextDouble();
+        double amount = scanner.nextDouble(); // handle negative
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
 
@@ -185,15 +179,18 @@ public class FinancialTracker {
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
     private static void displayLedger() {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+//        try {
+//            BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
         }
     }
 
@@ -258,7 +255,23 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> {/* TODO – month-to-date report */ }
+                case "1" -> {
+                    System.out.println("Month to Date report:");
+                    LocalDate current = LocalDate.now();
+                    try {
+                        BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME));
+                        String line;
+
+                        while ((line = reader.readLine()) != null) {
+                            String[] tokens = line.split("-");
+                            int year = Integer.parseInt(tokens[0]);
+                            int month = Integer.parseInt(tokens[1]);
+                            int day = Integer.parseInt(tokens[2]);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("File not found XoX");
+                    }
+                }
                 case "2" -> {/* TODO – previous month report */ }
                 case "3" -> {/* TODO – year-to-date report   */ }
                 case "4" -> {/* TODO – previous year report  */ }
