@@ -2,6 +2,7 @@ package com.pluralsight;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -107,8 +108,19 @@ public class FinancialTracker {
      * Store the amount as-is (positive) and append to the file.
      */
     private static void addDeposit(Scanner scanner) {
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
+        System.out.println("Enter date and time (yyyy-MM-dd HH:mm:ss):");
+        String dateTimeInput = scanner.nextLine();
+        LocalTime time;
+        LocalDate date;
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeInput, DATETIME_FMT);
+            date = dateTime.toLocalDate();
+            time = dateTime.toLocalTime();
+        } catch (Exception e) {
+            System.out.println("Invalid format, try again.");
+            return;
+        }
+
 
         System.out.println("Description of transaction:");
         String description = scanner.nextLine();
@@ -131,8 +143,18 @@ public class FinancialTracker {
      */
 
     private static void addPayment(Scanner scanner) {
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
+        System.out.println("Enter date and time (yyyy-MM-dd HH:mm:ss):");
+        String dateTimeInput = scanner.nextLine();
+        LocalTime time;
+        LocalDate date;
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeInput, DATETIME_FMT);
+            date = dateTime.toLocalDate();
+            time = dateTime.toLocalTime();
+        } catch (Exception e) {
+            System.out.println("Invalid format, try again.");
+            return;
+        }
 
         System.out.println("Description of transaction:");
         String description = scanner.nextLine();
@@ -282,20 +304,78 @@ public class FinancialTracker {
     }
 
     private static void customSearch(Scanner scanner) {
-        // TODO – prompt for any combination of date range, description,
-        //        vendor, and exact amount, then display matches
+        System.out.println("Custom Search:");
+        System.out.println("Enter Start Date (" + DATE_PATTERN + "):");
+        String startDateInput = scanner.nextLine();
+        LocalDate startDate = startDateInput.isEmpty() ? null : parseDate(startDateInput);
+
+        System.out.println("Enter End Date:");
+        String endDateInput = scanner.nextLine();
+        LocalDate endDate = endDateInput.isEmpty() ? null : parseDate(endDateInput);
+
+        System.out.println("Enter Description:");
+        String descriptionInput = scanner.nextLine();
+
+        System.out.println("Enter Vendor:");
+        String vendorInput = scanner.nextLine();
+
+        System.out.println("Enter Amount:");
+        String amountInput = scanner.nextLine();
+        Double amount = amountInput.isEmpty() ? null : parseDouble(amountInput);
+
+        boolean found = false;
+
+        for (Transaction transaction : transactions) {
+            boolean match = true;
+
+            if (startDate != null && transaction.getDate().isBefore(startDate)) {
+                match = false;
+            }
+
+            if (endDate != null && transaction.getDate().isAfter(endDate)) {
+                match = false;
+            }
+
+            if (descriptionInput != null && !transaction.getDescription().equalsIgnoreCase(descriptionInput)) {
+                match = false;
+            }
+
+            if (vendorInput != null && !transaction.getVendor().equalsIgnoreCase(vendorInput)) {
+                match = false;
+            }
+
+            if (amount != null && !(amount == transaction.getAmount())) {
+                match = false;
+            }
+
+            if (match) {
+                System.out.println(transaction);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Nothing found.\n");
+            return;
+        }
     }
 
     /* ------------------------------------------------------------------
        Utility parsers (you can reuse in many places)
        ------------------------------------------------------------------ */
     private static LocalDate parseDate(String s) {
-        /* TODO – return LocalDate or null */
-        return null;
+        try {
+            return LocalDate.parse(s, DATE_FMT);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static Double parseDouble(String s) {
-        /* TODO – return Double   or null */
-        return null;
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
