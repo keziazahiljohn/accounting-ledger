@@ -117,7 +117,7 @@ public class FinancialTracker {
             date = dateTime.toLocalDate();
             time = dateTime.toLocalTime();
         } catch (Exception e) {
-            System.out.println("Invalid format, try again.");
+            System.out.println("Invalid date format, try again.");
             return;
         }
 
@@ -321,7 +321,7 @@ public class FinancialTracker {
 
         System.out.println("Enter Amount:");
         String amountInput = scanner.nextLine();
-        Double amount = amountInput.isEmpty() ? null : parseDouble(amountInput);
+        Double amount = amountInput.isEmpty() ? null : Math.abs(parseDouble(amountInput));
 
         boolean found = false;
 
