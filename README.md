@@ -2,14 +2,45 @@
 
 ## Description of the Project
 
-Briefly describe what this Java console application does. Mention its purpose and who the intended users are. Explain the main functionality and what problems it aims to solve.
-
+The Accounting Ledger is a program that allows the owner of a company to keep in check with their finances. Via menu option, the user can choose to add transactions or look up previous ones. This is really helpful for the owner to stay organized with their transactions.
 ## User Stories
 
-List the user stories that guided the development of your application. Format these stories as: "As a [type of user], I want [some goal] so that [some reason]."
+As a customer, I want to be able to navigate a menu, so that I can choose a transaction or to view the ledger.
 
-- As a user, I want to be able to input my data, so that the application can process it accordingly.
-- As a user, I want to receive immediate feedback, so I can understand what to do next.
+- Add Deposit
+- Make a Payment
+- Display Ledger
+- Exit
+
+As a user, I want to be able to view entries and do custom searches, so that I can narrow my search and save time.
+
+- Display all entries
+- View Deposits only
+- View Payments only
+- Run Report
+
+As a user, I want to go even more specific with my search, so that I can find entries with the limited information I have.
+
+- Search by Start Date 
+- Search by End Date 
+- Search by Description 
+- Search by Vendor 
+- Search by Amount
+
+As a user, I want to run a report, so that I can view entries with more specifications.
+
+- Month to Date
+- Previous Month
+- Year to Date
+- Previous Year
+- Search by Vendor
+- Custom Search
+- Back
+
+As a user, I want to store my transactions in a file, so that I can reference them later.
+
+- Transaction class
+- Refer to other instances
 
 ## Setup
 
@@ -29,41 +60,38 @@ Follow these steps to get your application running within IntelliJ IDEA:
 3. After the project opens, wait for IntelliJ to index the files and set up the project.
 4. Find the main class with the `public static void main(String[] args)` method.
 5. Right-click on the file and select 'Run 'YourMainClassName.main()'' to start the application.
+6. Utilize characters 'D', 'P', 'L', and 'X' to maneuver the main menu.
+7. Continue to follow the prompts to either create a transaction or search for an existing one.
 
 ## Technologies Used
 
-- Java: Mention the version you are using.
-- Any additional libraries or frameworks used in the project.
+- Java: Amazon Corretto 17.0.18
+- Time API
+- IntelliJ IDEA
 
 ## Demo
 
-Include screenshots or GIFs that show your application in action. Use tools like [Giphy Capture](https://giphy.com/apps/giphycapture) to record a GIF of your application.
-
-![Application Screenshot](path/to/your/screenshot.png)
+![Deposit](deposit.gif)
+![Payment](payment.gif)
+![Ledger and Search](ledger.gif)
 
 ## Future Work
 
-Outline potential future enhancements or functionalities you might consider adding:
+Potential future enhancements:
 
-- Additional feature to be developed.
-- Improvement of current functionalities.
+- Move methods to separate files as their own classes
+- Improve UI or look and feel of the program
+- Utilize database instead of file to store data
+- Create version with GUI
 
 ## Resources
-
-List resources such as tutorials, articles, or documentation that helped you during the project.
-
+- https://www.w3schools.com/java/java_date.asp
+- https://www.youtube.com/watch?v=F2bZ1fkAQx0&t=4s
 - [Java Programming Tutorial](https://www.example.com)
 - [Effective Java](https://www.example.com)
 
-## Team Members
-
-- **Name 1** - Specific contributions or roles.
-- **Name 2** - Specific contributions or roles.
-
 ## Thanks
 
-Express gratitude towards those who provided help, guidance, or resources:
-
-- Thank you to [Mentor's Name] for continuous support and guidance.
-- A special thanks to all teammates for their dedication and teamwork.
+- Thank you to Raymond for continuous support and guidance.
+- Shoutout to Ricky for helping me when I had questions.
  
