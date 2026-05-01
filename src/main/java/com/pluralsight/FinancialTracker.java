@@ -40,9 +40,8 @@ public class FinancialTracker {
         loadTransactions(FILE_NAME);
 
         Scanner scanner = new Scanner(System.in);
+
         boolean running = true;
-
-
 
         while (running) {
             System.out.println("Welcome to TransactionApp");
@@ -129,11 +128,20 @@ public class FinancialTracker {
         String vendor = scanner.nextLine();
 
         System.out.println("Enter Amount:");
-        double amount = scanner.nextDouble(); // handle negative
+        double amount = Math.abs(scanner.nextDouble()); // handle negative
+        scanner.nextLine();
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
 
         transactions.add(transaction);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            writer.write(String.format("%s|%s|%s|%s|%.2f",
+                    date, time, description, vendor, amount));
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error writing to file.");
+        }
     }
 
     /**
@@ -164,10 +172,19 @@ public class FinancialTracker {
 
         System.out.println("Enter Amount:");
         double amount = scanner.nextDouble() * -1;
+        scanner.nextLine();
 
         Transaction transaction = new Transaction(date, time, description, vendor, amount);
 
         transactions.add(transaction);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            writer.write(String.format("%s|%s|%s|%s|%.2f",
+                    date, time, description, vendor, amount));
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error writing to file.");
+        }
     }
 
     /* ------------------------------------------------------------------
@@ -201,23 +218,51 @@ public class FinancialTracker {
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
     private static void displayLedger() {
+        transactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+        System.out.printf("%-12s %-10s %-20s %-15s %10s%n", "date", "time", "description", "vendor", "amount");
+        System.out.println("----------------------------------------------------------------------------");
+
         for (Transaction transaction : transactions) {
-            System.out.println(transaction);
+            System.out.printf("%-12s %-10s %-20s %-15s $%8.2f%n",
+                    transaction.getDate(),
+                    transaction.getTime(),
+                    transaction.getDescription(),
+                    transaction.getVendor(),
+                    transaction.getAmount());
         }
     }
 
     private static void displayDeposits() {
+        transactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+        System.out.println("Deposits:");
+        System.out.printf("%-12s %-10s %-20s %-15s %10s%n", "date", "time", "description", "vendor", "amount");
+        System.out.println("----------------------------------------------------------------------------");
         for (Transaction transaction : transactions) {
             if (transaction.getAmount() > 0) {
-                System.out.println(transaction);
+                System.out.printf("%-12s %-10s %-20s %-15s $%8.2f%n",
+                        transaction.getDate(),
+                        transaction.getTime(),
+                        transaction.getDescription(),
+                        transaction.getVendor(),
+                        transaction.getAmount());
             }
         }
     }
 
     private static void displayPayments() {
+        transactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+        System.out.println("Payments:");
+        System.out.printf("%-12s %-10s %-20s %-15s %10s%n", "date", "time", "description", "vendor", "amount");
+        System.out.println("----------------------------------------------------------------------------");
+
         for (Transaction transaction : transactions) {
             if (transaction.getAmount() < 0) {
-                System.out.println(transaction);
+                System.out.printf("%-12s %-10s %-20s %-15s $%8.2f%n",
+                        transaction.getDate(),
+                        transaction.getTime(),
+                        transaction.getDescription(),
+                        transaction.getVendor(),
+                        transaction.getAmount());
             }
         }
     }
@@ -288,22 +333,42 @@ public class FinancialTracker {
        Reporting helpers
        ------------------------------------------------------------------ */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
+        transactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+        System.out.printf("%-12s %-10s %-20s %-15s %10s%n", "date", "time", "description", "vendor", "amount");
+        System.out.println("----------------------------------------------------------------------------");
+
         for (Transaction transaction : transactions) {
             if (!transaction.getDate().isBefore(start) && !transaction.getDate().isAfter(end)) {
-                System.out.println(transaction);
+                System.out.printf("%-12s %-10s %-20s %-15s $%8.2f%n",
+                        transaction.getDate(),
+                        transaction.getTime(),
+                        transaction.getDescription(),
+                        transaction.getVendor(),
+                        transaction.getAmount());
             }
         }
     }
 
     private static void filterTransactionsByVendor(String vendor) {
+        transactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+        System.out.printf("%-12s %-10s %-20s %-15s %10s%n", "date", "time", "description", "vendor", "amount");
+        System.out.println("----------------------------------------------------------------------------");
+
         for (Transaction transaction : transactions) {
             if (transaction.getVendor().equalsIgnoreCase(vendor)) {
-                System.out.println(transaction);
+                System.out.printf("%-12s %-10s %-20s %-15s $%8.2f%n",
+                        transaction.getDate(),
+                        transaction.getTime(),
+                        transaction.getDescription(),
+                        transaction.getVendor(),
+                        transaction.getAmount());
             }
         }
     }
 
     private static void customSearch(Scanner scanner) {
+        transactions.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+
         System.out.println("Custom Search:");
         System.out.println("Enter Start Date (" + DATE_PATTERN + "):");
         String startDateInput = scanner.nextLine();
@@ -325,6 +390,9 @@ public class FinancialTracker {
 
         boolean found = false;
 
+        System.out.printf("%-12s %-10s %-20s %-15s %10s%n", "date", "time", "description", "vendor", "amount");
+        System.out.println("----------------------------------------------------------------------------");
+
         for (Transaction transaction : transactions) {
             boolean match = true;
 
@@ -336,11 +404,11 @@ public class FinancialTracker {
                 match = false;
             }
 
-            if (descriptionInput != null && !transaction.getDescription().equalsIgnoreCase(descriptionInput)) {
+            if (!descriptionInput.isEmpty() && !transaction.getDescription().equalsIgnoreCase(descriptionInput)) {
                 match = false;
             }
 
-            if (vendorInput != null && !transaction.getVendor().equalsIgnoreCase(vendorInput)) {
+            if (!vendorInput.isEmpty() && !transaction.getVendor().equalsIgnoreCase(vendorInput)) {
                 match = false;
             }
 
@@ -349,7 +417,12 @@ public class FinancialTracker {
             }
 
             if (match) {
-                System.out.println(transaction);
+                System.out.printf("%-12s %-10s %-20s %-15s $%8.2f%n",
+                        transaction.getDate(),
+                        transaction.getTime(),
+                        transaction.getDescription(),
+                        transaction.getVendor(),
+                        transaction.getAmount());
                 found = true;
             }
         }
